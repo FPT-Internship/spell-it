@@ -2,17 +2,18 @@
     display:flex;
     justify-content: center;
     padding: 1rem 1rem;
-    margin-top: 1rem;
-    
+    margin-top: 2rem;
+    height: 3.7rem;
 }
 
 .spell__message--content{
-    font-size: 1.5rem;
+    font-size: 2rem;
+    font-weight: 500;
     color: rgb(221, 61, 61);
 }
 
 .correct{
-    color: rgb(3, 151, 3);
+    color: rgb(24, 189, 24);
 }
 
 .incorrect{

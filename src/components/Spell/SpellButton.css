@@ -2,9 +2,9 @@
  display: flex;
  align-items: center;
  justify-items: center;
-background-image: linear-gradient(rgb(170, 183, 204),rgb(20, 116, 194));
+
  margin-top: 1rem;
- padding: 1rem 1rem;
+ padding: .5rem 1rem;
 }
 
 .spell__button--item{
