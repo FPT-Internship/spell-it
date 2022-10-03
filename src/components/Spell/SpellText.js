@@ -6,6 +6,8 @@ import SpellMessage from "./SpellMessage";
 import SpellButton from "./SpellButton";
 import SpellResult from "./SpellResult";
 import axios from "axios";
+import { yodelBuffer1, yodelBuffer2 } from "../../js/apiAudio";
+import play from "../../js/apiAudio";
 
 const SpellText = () => {
   const [input1, setInput1] = useState("");
@@ -17,38 +19,38 @@ const SpellText = () => {
 
   const items = text.split("");
 
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "e56018e9a8mshcfe99019078e214p130926jsnfeac8ce88cd2",
-      "X-RapidAPI-Host": "random-words5.p.rapidapi.com/getRandom",
-    },
+  const handleGetWord = () => {
+    const fetchData = async () => {
+      const res = await axios.get(`https://random-word-api.herokuapp.com/word`);
+      console.log(res.data[0]);
+      setText(res.data[0]);
+      setInput1("");
+      setMassage("Word has been taken!");
+    };
+    fetchData();
   };
 
-  const handleClick = async () => {
-    fetch("https://random-words5.p.rapidapi.com/getRandom", options)
-      .then((response) => response.text())
-      .then((response) => console.log(response))
-      .catch((err) => console.error(err));
+  const handleClick = () => {
+    let utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (text === input1) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (text.toUpperCase() === input1) {
+      play(yodelBuffer1);
       setMassage("Correct!");
       setCountCorrect((pre) => pre + 1);
-      console.log(countCorrect);
     } else {
+      play(yodelBuffer2);
       setMassage("Incorrect! Please input again!");
       setCountIncorrect((pre) => pre + 1);
-      console.log(countIncorrect);
     }
   };
 
   const handleHint = () => {
-    console.log(spans[1].textContent);
     for (let i = 0; i < spans.length; i++) {
-      if (spans[i].textContent !== items[i]) {
+      if (spans[i].textContent !== items[i].toUpperCase()) {
         spans[i].setAttribute("status", "hint");
       } else {
         spans[i].setAttribute("status", "inputed");
@@ -78,14 +80,34 @@ const SpellText = () => {
       <form>
         <div className='spell__text--input'>
           <input
+            type={text}
+            size='25'
+            defaultValue={input1}
+            maxLength={items.length}
+            onChange={(e) => {
+              if (e.which === 13) {
+                setInput1(e.target.value.toUpperCase());
+                setMassage("");
+              } else {
+                setInput1(e.target.value.toUpperCase());
+                setMassage("");
+              }
+            }}></input>
+          {/* <input
             type='text'
             size='25'
             value={input1}
-            maxlength={items.length}
+            maxLength={items.length}
             onChange={(e) => {
-              setInput1(e.target.value.toUpperCase());
+              if (e.which === 13) {
+                setInput1(e.target.value.toUpperCase());
+                setMassage("");
+              } else {
+                setInput1(e.target.value.toUpperCase());
+                setMassage("");
+              }
             }}
-          />
+          /> */}
           <button
             className='btn spell__button--enter'
             onClick={handleSubmit}
@@ -101,7 +123,7 @@ const SpellText = () => {
         </div>
       </form>
       <SpellMessage textH={massage} />
-      <SpellButton click={handleClick} />
+      <SpellButton clickPlay={handleClick} clickGetWord={handleGetWord} />
       <SpellResult
         countCorrect={countCorrect}
         countIncorrect={countIncorrect}

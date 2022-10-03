@@ -7,10 +7,12 @@ const SpellMessage = (props) => {
       return (
         <div className='spell__message--content correct'>{props.textH}</div>
       );
-    } else {
+    } else if (props.textH === "Incorrect! Please input again!") {
       return (
         <div className='spell__message--content incorrect'>{props.textH}</div>
       );
+    } else {
+      return <div className='spell__message--content correct'>{props.textH}</div>;
     }
   };
   return (
